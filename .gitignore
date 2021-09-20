@@ -1,0 +1,7 @@
+.vscode
+.gradle
+.classpath
+.factorypath
+.idea
+target
+
