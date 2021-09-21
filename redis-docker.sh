@@ -9,7 +9,7 @@ ROOT_PATH=`pwd`
 
 port=$1
 
-SUB_DIR=mysql
+SUB_DIR=postgresql
 DATE_DIR_PREFIX=data_
 USER_ID=root
 USER_PASSWORD=q1w2e3
@@ -24,16 +24,14 @@ echo "=     DATA_VOLUME : $ROOT_PATH     "
 echo "=                                   "
 echo "========================================================"
 
-docker volume rm mysql-8-$port
-docker volume create mysql-8-$port
+docker volume rm redis-$port
+docker volume create redis-$port
 
-docker run -d -p $port:3306  --restart unless-stopped  --name mysql-$port \
-  -e MYSQL_ROOT_PASSWORD=$USER_PASSWORD \
-  -e "TZ=Asia/Seoul" \
-  -v mysql-8-$port:/var/lib/mysql mysql:8.0.26 \
-  --character-set-server=utf8mb4 \
-  --collation-server=utf8mb4_unicode_ci \
-  --lower_case_table_names=1 \
-  --default-authentication-plugin=mysql_native_password \
+docker network create redis-network
+
+docker run -d -p $port:6379 --restart unless-stopped  --name redis-$port \
+  --network redis-network \
+  -v redis-$port:/data redis \
 
 docker ps -a
+

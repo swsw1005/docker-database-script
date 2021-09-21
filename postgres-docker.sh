@@ -24,18 +24,22 @@ echo "=     DATA_VOLUME : $ROOT_PATH     "
 echo "=                                   "
 echo "========================================================"
 
-mkdir $ROOT_PATH/$SUB_DIR
-mkdir $ROOT_PATH/$SUB_DIR/$DATE_DIR_PREFIX$port
+docker volume rm postgres-12-$port
+docker volume create postgres-12-$port
 
-echo "---------------------"
-echo $ROOT_PATH/$SUB_DIR/$DATE_DIR_PREFIX$port
-echo "--- ----- --- ------ ----"
-
-docker run -d -p $port:5432  --name postgres-$port \
+docker run -d -p $port:5432  --restart unless-stopped   --name postgres-$port \
   -e POSTGRES_USER=$USER_ID \
   -e POSTGRES_PASSWORD=$USER_PASSWORD \
-  -e "TZ=GMT+9" \
-  -v $ROOT_PATH/$SUB_DIR/$DATE_DIR_PREFIX$port:/var/lib/postgresql/data postgres:12
+  -e LC_COLLATE=C                \
+  -e effective_cache_size=4GB    \
+  -e maintenance_work_mem=64MB   \
+  -e max_wal_size=1GB            \
+  -e min_wal_size=80MB           \
+  -e shared_buffers=128MB        \
+  -e wal_buffers=-1              \
+  -e work_mem=4MB                \
+  -e "TZ=GMT+9"                  \
+  -v postgres-12-$port:/var/lib/postgresql/data postgres:12 \
+
 
 docker ps -a
-
