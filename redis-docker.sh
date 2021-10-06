@@ -5,7 +5,7 @@ cd ../
 mkdir data_volume
 cd data_volume
 
-ROOT_PATH=`pwd`
+ROOT_PATH=$(pwd)
 
 port=$1
 
@@ -29,9 +29,8 @@ docker volume create redis-$port
 
 docker network create redis-network
 
-docker run -d -p $port:6379 --restart unless-stopped  --name redis-$port \
-  --network redis-network \
-  -v redis-$port:/data redis \
+docker run -d -p $port:6379 --restart unless-stopped --name redis-$port \
+--network redis-network \
+-v redis-$port:/data redis \
 
 docker ps -a
-

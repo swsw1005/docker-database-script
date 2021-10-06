@@ -7,7 +7,10 @@ PORT=8083
 docker stop tomcat-test-$PORT
 docker rm tomcat-test-$PORT
 
-docker run -d -p $PORT:8080  --restart unless-stopped   --name tomcat-test-$PORT \
- -v $MOUNT_FOLDER_NAME:/usr/local/tomcat/webapps  tomcat:9.0.53-jdk11-temurin-focal  \
+docker volume rm tomcat-$port
+docker volume create tomcat-$port
 
-docker cp target/*.war  tomcat-test-$PORT:/usr/local/tomcat/webapps
+docker run -d -p $PORT:8080 --restart unless-stopped --name tomcat-test-$PORT \
+  -v tomcat-$port:/usr/local/tomcat/webapps tomcat:9.0.53-jdk11-temurin-focal
+
+docker cp target/*.war tomcat-test-$PORT:/usr/local/tomcat/webapps
