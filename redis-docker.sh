@@ -9,6 +9,14 @@ ROOT_PATH=$(pwd)
 
 port=$1
 
+if [ -z "$port" ]
+then
+      port=6379
+      echo "no port..."
+else
+      echo "custom port..."
+fi
+
 SUB_DIR=postgresql
 DATE_DIR_PREFIX=data_
 USER_ID=root
@@ -31,6 +39,8 @@ docker network create redis-network
 
 docker run -d -p $port:6379 --restart unless-stopped --name redis-$port \
 --network redis-network \
+-e LC_ALL=C.UTF-8 \
+-e TZ=Asia/Seoul \
 -v redis-$port:/data redis \
 
 docker ps -a

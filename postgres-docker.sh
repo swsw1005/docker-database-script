@@ -9,6 +9,14 @@ ROOT_PATH=`pwd`
 
 port=$1
 
+if [ -z "$port" ]
+then
+      port=5432
+      echo "no port..."
+else
+      echo "custom port..."
+fi
+
 SUB_DIR=postgresql
 DATE_DIR_PREFIX=data_
 USER_ID=root
@@ -31,6 +39,8 @@ docker run -d -p $port:5432  --restart unless-stopped   --name postgres-$port \
   -e POSTGRES_USER=$USER_ID \
   -e POSTGRES_PASSWORD=$USER_PASSWORD \
   -e LC_COLLATE=C                \
+  -e LC_ALL=C.UTF-8              \
+  -e TZ=Asia/Seoul               \
   -e effective_cache_size=4GB    \
   -e maintenance_work_mem=64MB   \
   -e max_wal_size=1GB            \
